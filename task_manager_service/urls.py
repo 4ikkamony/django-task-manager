@@ -21,6 +21,8 @@ from django.urls import path, include
 
 
 urlpatterns = [
+    path("", include("task_manager.urls", namespace="task_manager")),
+
     path("admin/", admin.site.urls),
 
     path("__debug__/", include("debug_toolbar.urls")),
