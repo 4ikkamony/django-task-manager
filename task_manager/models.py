@@ -44,7 +44,8 @@ class Worker(AbstractUser):
     teams = models.ManyToManyField(
         Team,
         through="WorkerTeam",
-        through_fields=("worker", "team", )
+        through_fields=("worker", "team", ),
+        blank=True
     )
 
     class Meta:
@@ -92,7 +93,8 @@ class Project(BaseToDoItem):
     teams = models.ManyToManyField(
         Team,
         through="ProjectTeam",
-        through_fields=("project", "team", )
+        through_fields=("project", "team", ),
+        blank=True
     )
 
     class Meta(BaseToDoItem.Meta):
@@ -111,7 +113,8 @@ class Task(BaseToDoItem):
     workers = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through="TaskWorker",
-        through_fields=("task", "worker")
+        through_fields=("task", "worker"),
+        blank=True
     )
 
     class Meta(BaseToDoItem.Meta):
