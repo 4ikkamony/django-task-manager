@@ -1,0 +1,64 @@
+{% extends "layouts/base-presentation.html" %}
+
+{% block title %} All Project Types {% endblock title %}
+
+{% block content %}
+
+  <div class="container mt-8">
+    <div class="d-flex justify-content-between align-items-center">
+      <h1 class="text-gradient text-primary pb-1">All Project Types</h1>
+      <a href="{% url 'task_manager:project-type-create' %}" class="btn btn-primary">
+        Create Project Type
+      </a>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h6 class="text-uppercase text-secondary font-weight-bolder">Overview</h6>
+      </div>
+      <div class="card-body px-3 pt-0 pb-2">
+        {% if project_type_list %}
+          <div class="table-responsive p-3">
+            <table class="table align-items-center table-hover table-bordered mb-0 w-100">
+              <thead class="bg-light">
+                <tr>
+                  <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7">ID</th>
+                  <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7">Name</th>
+                  <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7">Update</th>
+                  <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for project_type in project_type_list %}
+                  <tr>
+                    <td class="text-s font-weight-bold">{{ project_type.id }}</td>
+                    <td class="text-s font-weight-bold">
+                      <span class="text-primary text-gradient">
+                        {{ project_type }}
+                      </span>
+                    </td>
+                    <td>
+                      <a href="{% url 'task_manager:project-type-update' pk=project_type.id %}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-edit"></i>Update
+                      </a>
+                    </td>
+                    <td>
+                      <a href="{% url 'task_manager:project-type-delete' pk=project_type.id %}" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i> Delete
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="text-center text-muted my-4">No Project Types found</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
