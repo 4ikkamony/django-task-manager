@@ -38,7 +38,8 @@ class Worker(AbstractUser):
     # CATCH IN FORMS
     position = models.ForeignKey(
         Position,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
+        null=True
     )
     teams = models.ManyToManyField(
         Team,
