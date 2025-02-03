@@ -45,6 +45,9 @@ INSTALLED_APPS = [
 
     "debug_toolbar",
 
+    "crispy_forms",
+    "crispy_bootstrap4",
+
     "task_manager",
 ]
 
@@ -74,10 +77,16 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "task_manager.context_processors.cfg_assets_root",
+
             ],
         },
     },
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 WSGI_APPLICATION = "task_manager_service.wsgi.application"
 
@@ -136,6 +145,8 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = (BASE_DIR / "static", )
+
+ASSETS_ROOT = "/static/assets"
 
 
 # Default primary key field type
