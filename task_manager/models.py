@@ -27,10 +27,6 @@ class ProjectType(UniqueName):
     pass
 
 
-class Tag(UniqueName):
-    pass
-
-
 class Team(UniqueName):
     slug = AutoSlugField(
         max_length=100,
@@ -77,6 +73,10 @@ class BaseToDoItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
+    priority = models.IntegerField(
+        PriorityLevel.choices,
+        default=PriorityLevel.MEDIUM
+    )
 
     class Meta:
         abstract = True
@@ -93,7 +93,6 @@ class Project(BaseToDoItem):
         through="ProjectTeam",
         through_fields=("project", "team", )
     )
-    tags = models.ManyToManyField(Tag)
 
     class Meta(BaseToDoItem.Meta):
         default_related_name = "projects"
@@ -113,7 +112,6 @@ class Task(BaseToDoItem):
         through="TaskWorker",
         through_fields=("task", "worker")
     )
-    tags = models.ManyToManyField(Tag)
 
     class Meta(BaseToDoItem.Meta):
         default_related_name = "tasks"
@@ -172,12 +170,12 @@ class TaskWorker(BaseAssignee):
 
 
 class ProjectTeam(BaseAssignee):
-    team = models.ForeignKey(
-        Team,
-        on_delete=models.CASCADE,
-    )
     project = models.ForeignKey(
         Project,
+        on_delete=models.CASCADE,
+    )
+    team = models.ForeignKey(
+        Team,
         on_delete=models.CASCADE,
     )
 
