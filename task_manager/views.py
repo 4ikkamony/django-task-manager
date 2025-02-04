@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy, reverse
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic
 
@@ -24,7 +24,6 @@ from task_manager.models import (
     Position,
     TaskType,
     ProjectType,
-    TaskWorker,
 )
 
 
@@ -33,11 +32,7 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "task_manager/index.html")
 
 
-class TaskTypeListView(
-    LoginRequiredMixin,
-    NameSearchMixin,
-    generic.ListView
-):
+class TaskTypeListView(LoginRequiredMixin, NameSearchMixin, generic.ListView):
     model = TaskType
     context_object_name = "task_type_list"
     template_name = "task_manager/task_type_list.html"
@@ -66,11 +61,7 @@ class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
     context_object_name = "task_type"
 
 
-class ProjectTypeListView(
-    LoginRequiredMixin,
-    NameSearchMixin,
-    generic.ListView
-):
+class ProjectTypeListView(LoginRequiredMixin, NameSearchMixin, generic.ListView):
     model = ProjectType
     context_object_name = "project_type_list"
     template_name = "task_manager/project_type_list.html"
@@ -99,11 +90,7 @@ class ProjectTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
     context_object_name = "project_type"
 
 
-class PositionListView(
-    LoginRequiredMixin,
-    NameSearchMixin,
-    generic.ListView
-):
+class PositionListView(LoginRequiredMixin, NameSearchMixin, generic.ListView):
     model = Position
     paginate_by = 5
 
@@ -125,11 +112,7 @@ class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("task_manager:position-list")
 
 
-class WorkerListView(
-    LoginRequiredMixin,
-    WorkerSearchMixin,
-    generic.ListView
-):
+class WorkerListView(LoginRequiredMixin, WorkerSearchMixin, generic.ListView):
     model = Worker
     paginate_by = 5
 
@@ -166,11 +149,7 @@ class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("task_manager:worker-list")
 
 
-class TaskListView(
-    LoginRequiredMixin,
-    ToDoItemSearchMixin,
-    generic.ListView
-):
+class TaskListView(LoginRequiredMixin, ToDoItemSearchMixin, generic.ListView):
     model = Task
     paginate_by = 5
 

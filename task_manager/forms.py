@@ -57,10 +57,7 @@ class BaseToDoItemForm(forms.ModelForm):
                     (4, "Low"),
                     (5, "Optional"),
                 ],
-                attrs={
-                    "class": "form-select",
-                    "aria-label": "Select Task Priority"
-                },
+                attrs={"class": "form-select", "aria-label": "Select Task Priority"},
             ),
         }
         labels = {"priority": "Select Task Priority"}
@@ -69,21 +66,14 @@ class BaseToDoItemForm(forms.ModelForm):
         deadline = self.cleaned_data.get("deadline")
         if deadline:
             if deadline < timezone.now():
-                raise ValidationError(
-                    "The deadline cannot be in the past."
-                )
+                raise ValidationError("The deadline cannot be in the past.")
         return deadline
 
 
 class TaskForm(BaseToDoItemForm):
     class Meta(BaseToDoItemForm.Meta):
         model = Task
-        fields = (
-            *BaseToDoItemForm.Meta.fields,
-            "task_type",
-            "project",
-            "workers"
-        )
+        fields = (*BaseToDoItemForm.Meta.fields, "task_type", "project", "workers")
         widgets = {
             **BaseToDoItemForm.Meta.widgets,
             "workers": forms.CheckboxSelectMultiple(
@@ -95,7 +85,7 @@ class TaskForm(BaseToDoItemForm):
 class TaskWorkersUpdateForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ("workers", )
+        fields = ("workers",)
         widgets = {
             "workers": forms.CheckboxSelectMultiple(
                 attrs={"class": "form-select workers-field", "size": "5"}
@@ -109,9 +99,6 @@ class SearchForm(forms.Form):
         required=False,
         label="",
         widget=forms.TextInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "search..."
-            }
-        )
+            attrs={"class": "form-control", "placeholder": "search..."}
+        ),
     )

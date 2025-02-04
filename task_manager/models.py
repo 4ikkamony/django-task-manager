@@ -34,11 +34,7 @@ class Team(UniqueName):
 
 class Worker(AbstractUser):
     # CATCH IN FORMS
-    position = models.ForeignKey(
-        Position,
-        on_delete=models.SET_NULL,
-        null=True
-    )
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True)
     teams = models.ManyToManyField(
         Team,
         through="WorkerTeam",
@@ -81,10 +77,7 @@ class BaseToDoItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
-    priority = models.IntegerField(
-        PriorityLevel.choices,
-        default=PriorityLevel.MEDIUM
-    )
+    priority = models.IntegerField(PriorityLevel.choices, default=PriorityLevel.MEDIUM)
 
     class Meta:
         abstract = True
@@ -156,8 +149,7 @@ class WorkerTeam(BaseAssignee):
     class Meta(BaseAssignee.Meta):
         constraints = [
             models.UniqueConstraint(
-                fields=["worker", "team"],
-                name="unique_team_worker_constraint"
+                fields=["worker", "team"], name="unique_team_worker_constraint"
             )
         ]
 

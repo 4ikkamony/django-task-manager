@@ -1,11 +1,4 @@
-from django.views import generic
-from django.db.models import (
-    Case,
-    When,
-    Value,
-    IntegerField,
-    Q
-)
+from django.db.models import Case, When, Value, IntegerField, Q
 
 from task_manager.forms import SearchForm
 
@@ -55,9 +48,7 @@ class ToDoItemSearchMixin(
         return queryset
 
 
-class WorkerSearchMixin(
-    SearchFormContextMixin
-):
+class WorkerSearchMixin(SearchFormContextMixin):
     def get_queryset(self):
         queryset = super().get_queryset()
         search_query = self.request.GET.get("query")

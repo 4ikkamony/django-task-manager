@@ -2,6 +2,8 @@ from django.urls import path
 
 from task_manager.views import (
     index,
+    toggle_task_status,
+    unassign_worker_from_task,
     TaskTypeListView,
     TaskTypeCreateView,
     TaskTypeUpdateView,
@@ -23,8 +25,6 @@ from task_manager.views import (
     TaskCreateView,
     TaskUpdateView,
     TaskDeleteView,
-    toggle_task_status,
-    unassign_worker_from_task,
     TaskWorkersUpdateView,
 )
 
@@ -112,7 +112,7 @@ urlpatterns = [
     path(
         "tasks/<int:task_id>/unassign-worker/<int:worker_id>/",
         unassign_worker_from_task,
-        name="unassign-worker-from-task"
+        name="unassign-worker-from-task",
     ),
     path(
         "tasks/<int:pk>/toggle-status/",
