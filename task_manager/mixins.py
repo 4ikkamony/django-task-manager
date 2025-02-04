@@ -53,3 +53,35 @@ class ToDoItemSearchMixin(
                 .order_by("-relevance")
             )
         return queryset
+
+
+class WorkerSearchMixin(
+    SearchFormContextMixin
+):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get("query")
+        if search_query:
+            queryset = (
+                queryset.annotate(
+                    relevance=Case(
+                        When(
+                            Q(first_name__icontains=search_query)
+                            & Q(last_name__icontains=search_query)
+                            & Q(username__icontains=search_query),
+                            then=Value(15),
+                        ),
+                        When(
+                            Q(first_name__icontains=search_query)
+                            | Q(last_name__icontains=search_query),
+                            then=Value(10),
+                        ),
+                        When(username__icontains=search_query, then=Value(5)),
+                        default=Value(0),
+                        output_field=IntegerField(),
+                    )
+                )
+                .filter(relevance__gt=0)
+                .order_by("-relevance")
+            )
+        return queryset

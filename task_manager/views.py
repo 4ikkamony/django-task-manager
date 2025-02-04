@@ -9,6 +9,7 @@ from django.views import generic
 from task_manager.mixins import (
     NameSearchMixin,
     ToDoItemSearchMixin,
+    WorkerSearchMixin,
 )
 from task_manager.forms import (
     WorkerCreationForm,
@@ -124,7 +125,11 @@ class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("task_manager:position-list")
 
 
-class WorkerListView(LoginRequiredMixin, generic.ListView):
+class WorkerListView(
+    LoginRequiredMixin,
+    WorkerSearchMixin,
+    generic.ListView
+):
     model = Worker
     paginate_by = 5
 
