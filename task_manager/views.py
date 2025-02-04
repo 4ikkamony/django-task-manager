@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -28,8 +28,22 @@ from task_manager.models import (
 
 
 @login_required
-def index(request: HttpRequest) -> HttpResponse:
-    return render(request, "task_manager/index.html")
+def index(request):
+    total_workers = Worker.objects.count()
+    total_tasks = Task.objects.count()
+    total_tasks_types = TaskType.objects.count()
+
+    total_visits = request.session.get("total_visits", 0)
+    request.session["total_visits"] = total_visits + 1
+
+    context = {
+        "total_workers": total_workers,
+        "total_tasks": total_tasks,
+        "total_tasks_types": total_tasks_types,
+        "total_visits": total_visits + 1,
+    }
+
+    return render(request, "task_manager/index.html", context=context)
 
 
 class TaskTypeListView(LoginRequiredMixin, NameSearchMixin, generic.ListView):
