@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 from django_extensions.db.fields import AutoSlugField
+from django_extensions.management.commands.export_emails import full_name
 
 
 class UniqueName(models.Model):
@@ -55,6 +57,14 @@ class Worker(AbstractUser):
         verbose_name_plural = "workers"
 
         ordering = ("username", )
+
+    def get_absolute_url(self):
+        return reverse("task_manager:worker-detail", kwargs={"pk": self.pk})
+
+    @property
+    def full_name(self) -> str:
+        full_name = f"{self.first_name} {self.last_name}"
+        return full_name
 
 
 class BaseToDoItem(models.Model):
