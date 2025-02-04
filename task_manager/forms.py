@@ -92,15 +92,15 @@ class TaskForm(BaseToDoItemForm):
         }
 
 
-class AssignWorkerToTaskForm(forms.ModelForm):
-    worker = forms.ModelChoiceField(
-        queryset=get_user_model().objects.all(),
-        widget=forms.Select(attrs={"class": "form-select"}),
-    )
-
+class TaskWorkersUpdateForm(forms.ModelForm):
     class Meta:
-        model = TaskWorker
-        fields = ("worker",)
+        model = Task
+        fields = ("workers", )
+        widgets = {
+            "workers": forms.CheckboxSelectMultiple(
+                attrs={"class": "form-select workers-field", "size": "5"}
+            ),
+        }
 
 
 class SearchForm(forms.Form):
