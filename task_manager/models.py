@@ -119,6 +119,8 @@ class Task(BaseToDoItem):
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
     workers = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
