@@ -1,11 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpRequest
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy, reverse
+from django.utils import timezone
 from django.views import generic
 
-from task_manager.forms import WorkerCreationForm
+from task_manager.forms import (
+    WorkerCreationForm,
+    TaskForm,
+    AssignWorkerToTaskForm
+)
 from task_manager.models import (
     Team,
     Worker,
@@ -13,7 +18,7 @@ from task_manager.models import (
     Task,
     Position,
     TaskType,
-    ProjectType,
+    ProjectType, TaskWorker,
 )
 
 
@@ -137,3 +142,71 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Worker
     success_url = reverse_lazy("task_manager:worker-list")
+
+
+class TaskListView(LoginRequiredMixin, generic.ListView):
+    model = Task
+    paginate_by = 5
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.prefetch_related(
+            "workers",
+            "taskworker_set__worker"
+        )
+        return queryset
+
+
+class TaskCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Task
+    form_class = TaskForm
+    success_url = reverse_lazy("task_manager:task-list")
+
+
+class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Task
+    form_class = TaskForm
+    success_url = reverse_lazy("task_manager:task-list")
+
+
+class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Task
+    success_url = reverse_lazy("task_manager:task-list")
+
+
+class AssignWorkerToTaskView(generic.FormView):
+    form_class = AssignWorkerToTaskForm
+    template_name = "task_manager/assign_worker_to_task_form.html"
+
+    def form_valid(self, form):
+        task = get_object_or_404(Task, pk=self.kwargs["pk"])
+        worker = form.cleaned_data["worker"]
+
+        if TaskWorker.objects.filter(task=task, worker=worker).exists():
+            form.add_error(
+                "worker",
+                "This worker is already assigned to this task."
+            )
+            return self.form_invalid(form)
+
+        TaskWorker.objects.create(task=task, worker=worker)
+        return redirect('task_manager:task-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        task = get_object_or_404(Task, pk=self.kwargs["pk"])
+        context["task"] = task
+        return context
+
+
+class ToggleTaskStatus(generic.View):
+    def post(self, request, pk, *args, **kwargs):
+        task = get_object_or_404(Task, pk=pk)
+        if task.is_completed:
+            task.is_completed = False
+            task.completed_at = None
+        else:
+            task.is_completed = True
+            task.completed_at = timezone.now()
+        task.save()
+        return redirect(reverse("task_manager:task-list"))
