@@ -104,4 +104,14 @@ class AssignWorkerToTaskForm(forms.ModelForm):
 
 
 class SearchForm(forms.Form):
-    query = forms.CharField(max_length=255, required=False)
+    query = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "search..."
+            }
+        )
+    )

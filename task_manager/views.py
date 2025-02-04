@@ -6,8 +6,14 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views import generic
 
-
-from task_manager.forms import WorkerCreationForm, TaskForm, AssignWorkerToTaskForm
+from task_manager.mixins import (
+    NameSearchMixin,
+)
+from task_manager.forms import (
+    WorkerCreationForm,
+    TaskForm,
+    AssignWorkerToTaskForm
+)
 from task_manager.models import (
     Team,
     Worker,
@@ -25,7 +31,11 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "task_manager/index.html")
 
 
-class TaskTypeListView(LoginRequiredMixin, generic.ListView):
+class TaskTypeListView(
+    LoginRequiredMixin,
+    NameSearchMixin,
+    generic.ListView
+):
     model = TaskType
     context_object_name = "task_type_list"
     template_name = "task_manager/task_type_list.html"
@@ -54,7 +64,11 @@ class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
     context_object_name = "task_type"
 
 
-class ProjectTypeListView(LoginRequiredMixin, generic.ListView):
+class ProjectTypeListView(
+    LoginRequiredMixin,
+    NameSearchMixin,
+    generic.ListView
+):
     model = ProjectType
     context_object_name = "project_type_list"
     template_name = "task_manager/project_type_list.html"
@@ -83,7 +97,11 @@ class ProjectTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
     context_object_name = "project_type"
 
 
-class PositionListView(LoginRequiredMixin, generic.ListView):
+class PositionListView(
+    LoginRequiredMixin,
+    NameSearchMixin,
+    generic.ListView
+):
     model = Position
     paginate_by = 5
 

@@ -1,0 +1,9 @@
+{% load crispy_forms_filters %}
+
+<form method="get" action="" class="d-flex align-items-center gap-2 mt-4 mb-4">
+  <input class="btn btn-secondary d-flex align-items-center" type="submit" value="&#x1F50E;&#xFE0E;">
+  <div class="w-100">
+    {{ search_form|crispy }}
+  </div>
+  <a href="{{ request.path }}" class="btn btn-outline-secondary">Reset</a>
+</form>
