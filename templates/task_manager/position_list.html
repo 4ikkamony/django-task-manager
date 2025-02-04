@@ -23,14 +23,14 @@
             <table class="table align-items-center table-hover table-bordered mb-0 w-100">
               <thead class="bg-light">
                 <tr>
-                  <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7">ID</th>
                   <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7">Name</th>
+                  <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7">Update</th>
+                  <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7">Delete</th>
                 </tr>
               </thead>
               <tbody>
                 {% for position in position_list %}
                   <tr>
-                    <td class="text-s font-weight-bold">{{ position.id }}</td>
                     <td class="text-s font-weight-bold">
                       {{ position }}
                     </td>
