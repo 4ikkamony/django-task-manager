@@ -6,11 +6,8 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views import generic
 
-from task_manager.forms import (
-    WorkerCreationForm,
-    TaskForm,
-    AssignWorkerToTaskForm
-)
+
+from task_manager.forms import WorkerCreationForm, TaskForm, AssignWorkerToTaskForm
 from task_manager.models import (
     Team,
     Worker,
@@ -18,7 +15,8 @@ from task_manager.models import (
     Task,
     Position,
     TaskType,
-    ProjectType, TaskWorker,
+    ProjectType,
+    TaskWorker,
 )
 
 
@@ -150,10 +148,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.prefetch_related(
-            "workers",
-            "taskworker_set__worker"
-        )
+        queryset = queryset.prefetch_related("workers", "taskworker_set__worker")
         return queryset
 
 
@@ -190,7 +185,7 @@ class AssignWorkerToTaskView(generic.FormView):
             return self.form_invalid(form)
 
         TaskWorker.objects.create(task=task, worker=worker)
-        return redirect('task_manager:task-list')
+        return redirect("task_manager:task-list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

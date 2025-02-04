@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
 from django_extensions.db.fields import AutoSlugField
-from django_extensions.management.commands.export_emails import full_name
 
 
 class UniqueName(models.Model):
@@ -30,10 +29,7 @@ class ProjectType(UniqueName):
 
 
 class Team(UniqueName):
-    slug = AutoSlugField(
-        max_length=100,
-        populate_from=["name"]
-    )
+    slug = AutoSlugField(max_length=100, populate_from=["name"])
 
 
 class Worker(AbstractUser):
@@ -46,8 +42,11 @@ class Worker(AbstractUser):
     teams = models.ManyToManyField(
         Team,
         through="WorkerTeam",
-        through_fields=("worker", "team", ),
-        blank=True
+        through_fields=(
+            "worker",
+            "team",
+        ),
+        blank=True,
     )
 
     class Meta:
@@ -56,7 +55,7 @@ class Worker(AbstractUser):
         verbose_name = "worker"
         verbose_name_plural = "workers"
 
-        ordering = ("username", )
+        ordering = ("username",)
 
     def get_absolute_url(self):
         return reverse("task_manager:worker-detail", kwargs={"pk": self.pk})
@@ -76,10 +75,7 @@ class BaseToDoItem(models.Model):
         VERY_LOW = 5, "Optional"
 
     name = models.CharField(max_length=100)
-    slug = AutoSlugField(
-        max_length=100,
-        populate_from=["name"]
-    )
+    slug = AutoSlugField(max_length=100, populate_from=["name"])
     description = models.TextField()
     is_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -103,8 +99,11 @@ class Project(BaseToDoItem):
     teams = models.ManyToManyField(
         Team,
         through="ProjectTeam",
-        through_fields=("project", "team", ),
-        blank=True
+        through_fields=(
+            "project",
+            "team",
+        ),
+        blank=True,
     )
 
     class Meta(BaseToDoItem.Meta):
@@ -117,16 +116,13 @@ class Task(BaseToDoItem):
         on_delete=models.CASCADE,
     )
     project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        Project, on_delete=models.CASCADE, null=True, blank=True
     )
     workers = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through="TaskWorker",
         through_fields=("task", "worker"),
-        blank=True
+        blank=True,
     )
 
     class Meta(BaseToDoItem.Meta):
@@ -139,7 +135,7 @@ class BaseAssignee(models.Model):
         settings.AUTH_USER_MODEL,
         null=True,
         on_delete=models.SET_NULL,
-        related_name="assigned_%(class)s"
+        related_name="assigned_%(class)s",
     )
 
     class Meta:
@@ -171,10 +167,7 @@ class TaskWorker(BaseAssignee):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    task = models.ForeignKey(
-        Task,
-        on_delete=models.CASCADE
-    )
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
 
     class Meta(BaseAssignee.Meta):
         constraints = [

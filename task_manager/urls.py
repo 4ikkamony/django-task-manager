@@ -9,14 +9,26 @@ from task_manager.views import (
     ProjectTypeListView,
     ProjectTypeCreateView,
     ProjectTypeUpdateView,
-    ProjectTypeDeleteView, PositionCreateView, PositionUpdateView, PositionDeleteView, PositionListView, WorkerListView,
-    WorkerCreateView, WorkerDetailView, WorkerUpdateView, WorkerDeleteView, TaskListView, TaskCreateView,
-    TaskUpdateView, TaskDeleteView, AssignWorkerToTaskView, ToggleTaskStatus,
+    ProjectTypeDeleteView,
+    PositionCreateView,
+    PositionUpdateView,
+    PositionDeleteView,
+    PositionListView,
+    WorkerListView,
+    WorkerCreateView,
+    WorkerDetailView,
+    WorkerUpdateView,
+    WorkerDeleteView,
+    TaskListView,
+    TaskCreateView,
+    TaskUpdateView,
+    TaskDeleteView,
+    AssignWorkerToTaskView,
+    ToggleTaskStatus,
 )
 
 urlpatterns = [
     path("", index, name="index"),
-
     # TaskType views
     path(
         "task-types/",
@@ -38,7 +50,6 @@ urlpatterns = [
         TaskTypeDeleteView.as_view(),
         name="task-type-delete",
     ),
-
     # ProjectType views
     path(
         "project-types/",
@@ -60,7 +71,6 @@ urlpatterns = [
         ProjectTypeDeleteView.as_view(),
         name="project-type-delete",
     ),
-
     # Position views
     path(
         "positions/",
@@ -82,20 +92,22 @@ urlpatterns = [
         PositionDeleteView.as_view(),
         name="position-delete",
     ),
-
     # Worker views
     path("workers/", WorkerListView.as_view(), name="worker-list"),
     path("workers/create/", WorkerCreateView.as_view(), name="worker-create"),
     path("workers/<int:pk>/", WorkerDetailView.as_view(), name="worker-detail"),
     path("workers/<int:pk>/update/", WorkerUpdateView.as_view(), name="worker-update"),
     path("workers/<int:pk>/delete/", WorkerDeleteView.as_view(), name="worker-delete"),
-
     # Task views
     path("tasks/", TaskListView.as_view(), name="task-list"),
     path("tasks/create/", TaskCreateView.as_view(), name="task-create"),
     path("tasks/<int:pk>/update/", TaskUpdateView.as_view(), name="task-update"),
     path("tasks/<int:pk>/delete/", TaskDeleteView.as_view(), name="task-delete"),
-    path("tasks/<int:pk>/assign-worker/", AssignWorkerToTaskView.as_view(), name="assign-worker-to-task"),
+    path(
+        "tasks/<int:pk>/assign-worker/",
+        AssignWorkerToTaskView.as_view(),
+        name="assign-worker-to-task",
+    ),
     path(
         "tasks/<int:pk>/toggle-status/",
         ToggleTaskStatus.as_view(),
