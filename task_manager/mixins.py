@@ -10,7 +10,16 @@ from django.db.models import (
 from task_manager.forms import SearchForm
 
 
-class NameSearchMixin(generic.ListView):
+class SearchFormContextMixin:
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["search_form"] = SearchForm()
+        return context
+
+
+class NameSearchMixin(
+    SearchFormContextMixin,
+):
     def get_queryset(self):
         queryset = super().get_queryset()
         search_query = self.request.GET.get("query")
@@ -18,13 +27,10 @@ class NameSearchMixin(generic.ListView):
             queryset = queryset.filter(name__icontains=search_query)
         return queryset
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context["search_form"] = SearchForm()
-        return context
 
-
-class ToDoItemSearchMixin(generic.ListView):
+class ToDoItemSearchMixin(
+    SearchFormContextMixin,
+):
     def get_queryset(self):
         queryset = super().get_queryset()
         search_query = self.request.GET.get("query")
@@ -47,8 +53,3 @@ class ToDoItemSearchMixin(generic.ListView):
                 .order_by("-relevance")
             )
         return queryset
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context["search_form"] = SearchForm()
-        return context
