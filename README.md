@@ -11,6 +11,16 @@ This Django-powered app is here to help people manage their never-ending to-dos.
 - **Search** TaskTypes, Workers, and Tasks
 - **Admire** Completed and Not Completed Tasks for each Worker
 
+## [Project deployed on Render](https://django-task-manager-zyxj.onrender.com/)
+username:
+```
+admin.user
+```
+password:
+```
+1qazcde3
+```
+
 ## Getting Started
 
 Follow these steps to set up the project locally.
@@ -33,7 +43,7 @@ Follow these steps to set up the project locally.
    ```
 3. Install dependencies:
    ```sh
-   pip install -r requirements.txt
+   pip install -r requirements-dev.txt
    ```
 4. Apply database migrations:
    ```sh
