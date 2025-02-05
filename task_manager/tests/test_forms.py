@@ -8,9 +8,7 @@ from task_manager.models import TaskType
 
 class TaskFormTest(TestCase):
     def setUp(self):
-        self.task_type = TaskType.objects.create(
-            name="Test Task Type"
-        )
+        self.task_type = TaskType.objects.create(name="Test Task Type")
         self.form_data = {
             "name": "Test task",
             "description": "Test description",
