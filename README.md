@@ -29,7 +29,7 @@ Follow these steps to set up the project locally.
 2. Set up a virtual environment:
    ```sh
    python -m venv venv
-   source venv\Scripts\activate  # On Linux/MacOS use `venv/bin/activate`
+   venv\Scripts\activate  # On Linux/MacOS use `source venv/bin/activate`
    ```
 3. Install dependencies:
    ```sh
