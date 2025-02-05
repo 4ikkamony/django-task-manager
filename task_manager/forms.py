@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -65,8 +64,8 @@ class BaseToDoItemForm(forms.ModelForm):
     def clean_deadline(self):
         deadline = self.cleaned_data.get("deadline")
         if deadline:
-            if deadline < timezone.now():
-                raise ValidationError("The deadline cannot be in the past.")
+            if deadline < timezone.now() + timezone.timedelta(minutes=15):
+                raise ValidationError("Deadline must be at least 15 minutes from now")
         return deadline
 
 
