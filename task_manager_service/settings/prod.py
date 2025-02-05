@@ -1,6 +1,9 @@
 from .base import *
 
 
+SECRET_KEY = os.environ["SECRET_KEY"]
+
+
 DEBUG = False
 
 ALLOWED_HOSTS = []
@@ -10,7 +13,6 @@ if RENDER_EXTERNAL_HOSTNAME:
    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     "default": {
@@ -29,5 +31,5 @@ DATABASES = {
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 360
+SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
