@@ -12,13 +12,13 @@ This Django-powered app is here to help people manage their never-ending to-dos.
 - **Admire** Completed and Not Completed Tasks for each Worker
 
 ## [Project deployed on Render](https://django-task-manager-zyxj.onrender.com/)
-username:
+login:
 ```
-admin.user
+user
 ```
 password:
 ```
-1qazcde3
+user12345
 ```
 
 ## Getting Started
