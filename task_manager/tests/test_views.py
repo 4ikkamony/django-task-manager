@@ -21,7 +21,10 @@ class PositionTest(TestCase):
             username="testuser",
             password="test1test23",
         )
-        self.client.login(self.worker)
+        self.client.login(
+            username="testuser",
+            password="test1test23"
+        )
 
     def test_retrieve_position(self):
         Position.objects.create(name="testposition1")
