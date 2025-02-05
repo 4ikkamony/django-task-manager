@@ -33,7 +33,7 @@ Follow these steps to set up the project locally.
 
 1. Clone the repository:
    ```sh
-   https://github.com/4ikkamony/django-task-manager.git
+   git clone -b develop https://github.com/4ikkamony/django-task-manager.git
    cd django-task-manager
    ```
 2. Set up a virtual environment:
