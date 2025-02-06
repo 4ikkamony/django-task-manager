@@ -62,7 +62,14 @@ Follow these steps to set up the project locally.
    ```sh
    python manage.py runserver
    ```
-
+You can also create your own .env file based on .env.sample
+```sh
+cp .env.sample .env
+```
+And set your own environmental variables, such as:
+  - your postgresql connection data
+  - django secret key, path to settings module and hostname
+  - credentials for task_manager.management.commands.add_admin_user command
 ## Usage
 
 - Log in to create and manage tasks.
