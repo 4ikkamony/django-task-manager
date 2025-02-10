@@ -18,7 +18,7 @@ user
 ```
 password:
 ```
-user12345
+user1234
 ```
 
 ## Getting Started
