@@ -1,7 +1,9 @@
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic
@@ -14,7 +16,7 @@ from task_manager.mixins import (
 from task_manager.forms import (
     WorkerCreationForm,
     TaskForm,
-    TaskWorkersUpdateForm,
+    TaskWorkersUpdateForm, WorkerRegistrationForm,
 )
 from task_manager.models import (
     Team,
@@ -25,6 +27,25 @@ from task_manager.models import (
     TaskType,
     ProjectType,
 )
+
+
+def login_view(request):
+    form = AuthenticationForm(request, initial={"username": "user", "password": "user1234"})
+
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
+            user = authenticate(username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect("task_manager:index")
+            else:
+                form.add_error(None, "Invalid username or password.")
+
+    return render(request, "registration/login.html", {'form': form})
 
 
 @login_required
@@ -226,3 +247,10 @@ def toggle_task_status(request, pk):
             task.completed_at = timezone.now()
         task.save()
     return HttpResponseRedirect(reverse_lazy("task_manager:task-list"))
+
+
+class RegisterView(generic.CreateView):
+    model = Worker
+    form_class = WorkerRegistrationForm
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("login")

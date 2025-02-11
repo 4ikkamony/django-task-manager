@@ -101,3 +101,9 @@ class SearchForm(forms.Form):
             attrs={"class": "form-control", "placeholder": "search..."}
         ),
     )
+
+
+class WorkerRegistrationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = Worker
+        fields = ("username", "position", "password1", "password2", )
