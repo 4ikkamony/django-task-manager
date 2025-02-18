@@ -1,0 +1,102 @@
+{% extends 'layouts/base-presentation.html' %}
+
+{% block title %} All Tasks {% endblock title %}
+
+{% block content %}
+
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+      {% include "includes/search_form.html" %}
+      <a href="{% url 'task_manager:task-create' %}" class="btn btn-primary">
+        Create Task
+      </a>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h6 class="text-uppercase text-secondary font-weight-bolder">Overview</h6>
+      </div>
+      <div class="card-body px-3 pt-0 pb-2">
+        {% if task_list %}
+              {% for task in task_list %}
+                <div class="card mb-4">
+                  <div class="card-body {{ task.is_is_completed|yesno:'task-done-border,task-not-done-border' }}">
+                    <div class="d-flex justify-content-between">
+                      <div class="d-flex align-items-center">
+                        {% if task.is_completed %}
+                          <p class="badge bg-success">Done</p>
+                        {% else %}
+                          <p class="badge bg-danger">Not done</p>
+                        {% endif %}
+                        <h5 class="card-title ms-2">{{ task.name }}</h5>
+                      </div>
+                      {% if task.is_completed %}
+                        <p class="d-flex align-items-center badge bg-success text-white">Completed: {{ task.completed_at|date:"d-M-Y, H:i" }}</p>
+                      {% endif %}
+                      <form action="{% url 'task_manager:task-toggle-status' pk=task.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn {{ task.is_completed|yesno:'btn-light,btn-outline-primary' }}">
+                          <em>Mark as {{ task.is_completed|yesno:'Not Done,Done'}}</em>
+                        </button>
+                      </form>
+                      <a href="{% url 'task_manager:assign-workers-to-task' pk=task.id %}" class="btn {{ task.is_completed|yesno:'btn-outline-dark,btn-light' }}">
+                        <em>Assign Workers</em>
+                      </a>
+                    </div>
+                    {% if task.deadline is not None %}
+                      <h6 class="card-subtitle mb-2">Deadline: <span class="badge {{ task.is_completed|yesno:'bg-light text-muted,bg-warning' }} text-dark">{{ task.deadline|time:"H:i" }}<br>{{ task.deadline|date:"d-M-Y" }}</span></h6>
+                    {% endif %}
+                    <hr>
+                    <p class="card-text">{{ task.description|linebreaksbr }}</p>
+                    <hr>
+                    <div class="mt-2 mb-2 d-flex justify-content-between">
+                      {% if task.workers.exists %}
+                        <div class="row" style="max-width: 75%">
+                          <span><strong>Assigned Workers:</strong> </span>
+                          {% for task_worker in task.taskworker_set.all %}
+                            <div class="col-md-6 mb-3 d-flex justify-content-center">
+                              <div class="card" style="min-height: 150px; flex: 1; width: 100%;">
+                                <div class="card-body d-flex flex-column">
+                                  <form method="post" action="{% url 'task_manager:unassign-worker-from-task' task_id=task.id worker_id=task_worker.worker.id %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-danger" type="submit" value="Unassign">Unassign</button>
+                                  </form>
+                                  <h5 class="card-title text-nowrap">
+                                    <a href="{% url 'task_manager:worker-detail' pk=task_worker.worker.id %}">
+                                      {{ task_worker.worker.username }}
+                                    </a>
+                                  </h5>
+                                  <p class="card-text">
+                                    Assigned at: {{ task_worker.assigned_at|time:"H:i" }}<br>{{ task_worker.assigned_at|date:"d-M-Y" }}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          {% endfor %}
+                        </div>
+
+                      {% else %}
+                        <span><strong>No Assigned Workers</strong> </span>
+                      {% endif %}
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                      <p class="text-muted">Created: {{ task.created_at|date:"d-M-Y, H:i" }}</p>
+
+                      <div>
+                        <a href="{% url 'task_manager:task-update' pk=task.id %}" class="btn btn-outline-primary card-link">Update</a>
+                        <a href="{% url 'task_manager:task-delete' pk=task.id %}" class="btn btn-outline-danger card-link"> Delete </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-center text-muted my-4">No Tasks Found</p>
+        {% endif %}
+      </div>
+    </div>
+{% endblock %}

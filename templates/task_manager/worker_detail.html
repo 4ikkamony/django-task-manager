@@ -1,0 +1,160 @@
+{% extends "layouts/base-presentation.html" %}
+
+{% block title %} {{ worker }} worker {% endblock title %}
+
+{% block content %}
+
+  <div class="container nav-gap">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h3 class="font-weight-bolder text-gradient-primary d-flex justify-content-between align-items-center">
+          {{ worker }}
+          <div>
+            <a href="{% url 'task_manager:worker-update' pk=worker.id %}" class="btn btn-secondary btn-sm">
+              <i class="fas fa-edit"></i> Update
+            </a>
+            <a href="{% url 'task_manager:worker-delete' pk=worker.id %}" class="btn btn-danger btn-sm">
+              <i class="fas fa-trash"></i> Delete
+            </a>
+          </div>
+        </h3>
+      </div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <strong>First Name:</strong>
+            {% if worker.first_name %}
+              {{ worker.first_name }}
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </li>
+          <li class="list-group-item">
+            <strong>Last Name:</strong>
+            {% if worker.last_name %}
+              {{ worker.last_name }}
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </li>
+          <li class="list-group-item">
+            <strong>Email:</strong>
+            {% if worker.email %}
+              <a href="mailto:{{ worker.email }}" class="text-primary">{{ worker.email }}</a>
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </li>
+          <li class="list-group-item">
+            <strong>Position:</strong>
+            {% if worker.position %}
+              <span class="text-primary">{{ worker.position }}</span>
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </li>
+          <li class="list-group-item">
+            <strong>Teams:</strong>
+          </li>
+<li class="list-group-item">
+  <strong>Tasks:</strong>
+<div class="mt-2 mb-2">
+    {% if worker.tasks.exists %}
+      <div class="row" style="max-width: 100%; overflow-x: hidden; padding: 0;"> <!-- Prevent horizontal scroll -->
+        <div class="col-md-6">
+          <h6 class="">Completed Tasks</h6>
+          <div style="max-height: 300px; overflow-y: auto; overflow-x: hidden; padding-right: 10px;">
+            <div class="row">
+              {% for task in completed_tasks %}
+                <div class="card mb-4" style="width: 100%; max-width: 500px; box-sizing: border-box;"> <!-- box-sizing to prevent overflow -->
+                  <div class="card-body {{ task.is_completed|yesno:'task-done-border,task-not-done-border' }}">
+                    <div class="d-flex align-items-center">
+                      <h5 class="card-title ms-2">{{ task.name }}</h5>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <form action="{% url 'task_manager:task-toggle-status' pk=task.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn {{ task.is_completed|yesno:'btn-light,btn-outline-primary' }} btn-sm">
+                          <em>Mark as {{ task.is_completed|yesno:'Not Done,Done'}}</em>
+                        </button>
+                      </form>
+                      <a href="{% url 'task_manager:assign-workers-to-task' pk=task.id %}" class="btn {{ task.is_completed|yesno:'btn-outline-dark,btn-light' }} btn-sm">
+                        <em>Assign Workers</em>
+                      </a>
+                    </div>
+                    {% if task.deadline is not None %}
+                      <h6 class="card-subtitle mb-2">Deadline: <span class="badge {{ task.is_completed|yesno:'bg-light text-muted,bg-warning' }} text-dark">{{ task.deadline|time:"H:i" }}<br>{{ task.deadline|date:"d-M-Y" }}</span></h6>
+                    {% endif %}
+                    {% if task.is_completed %}
+                      <p class="d-flex align-items-center badge bg-success text-white">Completed: {{ task.completed_at|date:"d-M-Y, H:i" }}</p>
+                    {% endif %}
+                    <hr>
+                    <p class="card-text">{{ task.description|linebreaksbr }}</p>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                      <p class="text-muted">Created: {{ task.created_at|date:"d-M-Y, H:i" }}</p>
+                      <div>
+                        <a href="{% url 'task_manager:task-update' pk=task.id %}" class="btn btn-outline-primary card-link btn-sm">Update</a>
+                        <a href="{% url 'task_manager:task-delete' pk=task.id %}" class="btn btn-outline-danger card-link btn-sm"> Delete </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h6 class="text-danger">Ongoing Tasks</h6>
+          <div style="max-height: 300px; overflow-y: auto; overflow-x: hidden; padding-right: 10px;">
+            <div class="row">
+              {% for task in not_completed_tasks %}
+                <div class="card mb-4" style="width: 100%; max-width: 500px; box-sizing: border-box;"> <!-- box-sizing to prevent overflow -->
+                  <div class="card-body {{ task.is_completed|yesno:'task-done-border,task-not-done-border' }}">
+                    <div class="d-flex align-items-center">
+                      <h5 class="card-title ms-2">{{ task.name }}</h5>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <form action="{% url 'task_manager:task-toggle-status' pk=task.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn {{ task.is_completed|yesno:'btn-light,btn-outline-primary' }} btn-sm">
+                          <em>Mark as {{ task.is_completed|yesno:'Not Done,Done'}}</em>
+                        </button>
+                      </form>
+                      <a href="{% url 'task_manager:assign-workers-to-task' pk=task.id %}" class="btn {{ task.is_completed|yesno:'btn-outline-dark,btn-light' }} btn-sm">
+                        <em>Assign Workers</em>
+                      </a>
+                    </div>
+                    {% if task.deadline is not None %}
+                      <h6 class="card-subtitle mb-2">Deadline: <span class="badge {{ task.is_completed|yesno:'bg-light text-muted,bg-warning' }} text-dark">{{ task.deadline|time:"H:i" }}<br>{{ task.deadline|date:"d-M-Y" }}</span></h6>
+                    {% endif %}
+                    <p class="d-flex align-items-center badge bg-secondary text-white"></p>
+                    <hr>
+                    <p class="card-text">{{ task.description|linebreaksbr }}</p>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                      <p class="text-muted">Created: {{ task.created_at|date:"d-M-Y, H:i" }}</p>
+                      <div>
+                        <a href="{% url 'task_manager:task-update' pk=task.id %}" class="btn btn-outline-primary card-link btn-sm">Update</a>
+                        <a href="{% url 'task_manager:task-delete' pk=task.id %}" class="btn btn-outline-danger card-link btn-sm"> Delete </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <p>No Tasks Assigned</p>
+    {% endif %}
+  </div>
+
+</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
